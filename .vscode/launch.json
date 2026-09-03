@@ -1,151 +1,50 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "lldb",
-      "request": "attach",
-      "name": "Debug already-running process",
-      "pid": "${command:pickMyProcess}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
+      "name": "Debug SST",
+      "type": "node",
       "request": "launch",
-      "name": "Debug executable 'warp'",
-      "cargo": {
-        "args": ["build", "--bin=warp"],
-        "filter": {
-          "name": "warp",
-          "kind": "bin"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug MacOS executable",
-      "preLaunchTask": "build_warplocal",
-      "program": "${workspaceFolder}/target/debug/bundle/osx/WarpLocal.app/Contents/MacOS/warp",
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug executable 'warp' with fast_dev",
-      "cargo": {
-        "args": ["build", "--bin=warp", "--features=fast_dev"],
-        "filter": {
-          "name": "warp",
-          "kind": "bin"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug executable 'warp' with with_local_server",
-      "cargo": {
-        "args": ["build", "--bin=warp", "--features=with_local_server"],
-        "filter": {
-          "name": "warp",
-          "kind": "bin"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug MacOS executable local session sharing server",
-      "preLaunchTask": "build_warplocal_localsessionsharing",
-      "program": "${workspaceFolder}/target/debug/bundle/osx/WarpLocal.app/Contents/MacOS/warp",
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug MacOS executable with fast_dev",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/sst",
+      "runtimeArgs": ["dev", "--increase-timeout"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      // sourceMapRenames helps with the loading spinner when debugging and viewing local variables
+      "sourceMapRenames": false,
       "env": {
-        "RUST_BACKTRACE": "1"
-      },
-      "preLaunchTask": "build_warplocal_fastdev",
-      "program": "${workspaceFolder}/target/debug/bundle/osx/WarpLocal.app/Contents/MacOS/warp",
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
+        "AWS_PROFILE": "flo-ct-flo360"
+      }
     },
     {
-      "type": "lldb",
+      "name": "Debug Tests - Unit",
+      "type": "node",
       "request": "launch",
-      "name": "Debug MacOS executable with fast_dev + local session sharing server",
-      "preLaunchTask": "build_warplocal_fastdev_localsessionsharing",
-      "program": "${workspaceFolder}/target/debug/bundle/osx/WarpLocal.app/Contents/MacOS/warp",
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/sst",
+      "runtimeArgs": ["bind", "yarn", "\"jest\"", "\"--watch\"", "\"--config\"", "\"./jest.unit.config.cjs\"", "\"${input:scopeTestsFileName}\""],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "AWS_PROFILE": "flo-ct-flo360"
+      },
     },
     {
-      "type": "lldb",
+      "name": "Debug Tests - E2E",
+      "type": "node",
       "request": "launch",
-      "name": "Debug unit tests in executable 'warp'",
-      "cargo": {
-        "args": ["test", "--no-run", "--bin=warp", "--package=warp"],
-        "filter": {
-          "name": "warp",
-          "kind": "bin"
-        }
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/sst",
+      "runtimeArgs": ["bind", "yarn", "\"vitest\"", "\"--config\"", "\"./vitest.e2e.config.ts\"", "\"${input:scopeTestsFileName}\""],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "AWS_PROFILE": "flo-ct-flo360"
       },
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
     },
+  ],
+  "inputs": [
     {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug integration tests in executable 'integration'",
-      "cargo": {
-        "args": ["build", "--bin=integration", "--package=warp"],
-        "env": {
-          "WARPUI_USE_REAL_DISPLAY_IN_INTEGRATION_TESTS": "1"
-        },
-        "filter": {
-          "name": "integration",
-          "kind": "bin"
-        }
-      },
-      "args": ["test_waterfall_input"],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "Debug unit tests in library 'warpui'",
-      "cargo": {
-        "args": ["test", "--no-run", "--lib", "--package=warpui"],
-        "filter": {
-          "name": "warpui",
-          "kind": "lib"
-        }
-      },
-      "args": [],
-      "cwd": "${workspaceFolder}",
-      "sourceLanguages": ["rust"]
+      "id": "scopeTestsFileName",
+      "type": "promptString",
+      "description": "Partial file name to scope test debugging to. ex. arena. Leave blank to run all tests.",
     }
   ]
 }
